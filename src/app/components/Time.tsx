@@ -2,11 +2,7 @@
 import type { NextComponentType, NextPageContext } from "next";
 import { useTime } from "../hooks/useTime";
 
-interface Props {}
-
-const Time: NextComponentType<NextPageContext, {}, Props> = (
-  props: Props,
-) => {
+const Time: NextComponentType<NextPageContext> = () => {
   const time = useTime();
   return (
     <div className='flex flex-col justify-center items-center'>
