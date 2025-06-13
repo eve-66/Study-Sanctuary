@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export const useTime = () => {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date | null>(null); //null initially to avoid SSR hydration issues
 
   const culcTime = () => {
     setTime(new Date());
