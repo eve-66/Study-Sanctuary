@@ -1,12 +1,24 @@
 'use client';
 import type { NextComponentType, NextPageContext } from "next";
 import { useState } from "react";
+import { data } from "../action/data";
 
 const StateButtons: NextComponentType<NextPageContext> = () => {
   const [state, setState] = useState<number>(0); // initial -> 0, start -> 1|3, stop -> 0, rest -> 2, restart -> 1|3
 
   const handleClick = (nextState: number) => {
     setState(nextState);
+    switch(state){
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      default:
+    }
   }
 
   if(state === 0) {

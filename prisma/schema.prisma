@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// study_sessions テーブルのモデル定義
+model StudySession {
+  id                 String   @id @default(uuid()) @map("session_id") // UUIDを自動生成、DBカラム名をsession_idにマッピング
+  userId             String   @map("user_id") // ユーザー識別子（ここでは一時的にUUIDを使用）
+  startTime          DateTime @map("start_time") @default(now()) // セッション開始時刻
+  endTime            DateTime? @map("end_time") // セッション終了時刻 (nullable)
+  totalSessionDuration Int?    @map("total_session_duration") // セッション全体の時間（休憩含む）
+  effectiveStudyDuration Int?   @map("effective_study_duration") // 純粋な学習時間
+
+  // study_segments とのリレーション定義
+  segments           StudySegment[]
+
+  createdAt          DateTime @map("created_at") @default(now()) // レコード作成日時
+
+  @@map("study_sessions") // DBのテーブル名を指定
+}
+
+// study_segments テーブルのモデル定義
+model StudySegment {
+  id                String    @id @default(uuid()) @map("segment_id") // UUIDを自動生成、DBカラム名をsegment_idにマッピング
+  sessionId         String    @map("session_id") // どのStudySessionに属するか
+  segmentType       String    @map("segment_type") // 'study' or 'rest'
+  startTime         DateTime  @map("start_time") @default(now()) // セグメント開始時刻
+  endTime           DateTime? @map("end_time") // セグメント終了時刻 (nullable)
+  durationSeconds   Int?      @map("duration_seconds") // セグメントの期間 (秒)
+  orderInSession    Int       @map("order_in_session") // セッション内の順序
+
+  // StudySession とのリレーション定義 (sessionId を外部キーとして参照)
+  session           StudySession @relation(fields: [sessionId], references: [id])
+
+  createdAt         DateTime  @map("created_at") @default(now()) // レコード作成日時
+
+  @@map("study_segments") // DBのテーブル名を指定
+}
